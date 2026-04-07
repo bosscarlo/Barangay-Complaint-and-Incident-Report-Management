@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block auth_content %}
+<style>
+  body { background:linear-gradient(135deg,#0f1c3f 0%,#1a3a6e 60%,#1a56db 100%); }
+  .auth-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+  .auth-card { background:#fff; border-radius:24px; padding:44px 40px; width:100%; max-width:520px; box-shadow:0 24px 60px rgba(0,0,0,.25); }
+  .auth-logo { width:56px; height:56px; border-radius:16px; background:#f59e0b; display:flex; align-items:center; justify-content:center; font-size:1.5rem; color:#fff; margin-bottom:20px; }
+  .auth-card h2 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:1.6rem; }
+  .auth-card p.sub { color:#64748b; font-size:.9rem; margin-bottom:24px; }
+  .form-label { font-weight:600; font-size:.85rem; margin-bottom:5px; }
+  .btn-register { background:#1a56db; border:none; color:#fff; width:100%; padding:13px; border-radius:12px; font-size:1rem; font-weight:700; margin-top:8px; cursor:pointer; transition:background .2s; }
+  .btn-register:hover { background:#1245b8; }
+  .auth-footer { text-align:center; margin-top:20px; font-size:.88rem; color:#64748b; }
+  .auth-footer a { color:#1a56db; font-weight:600; text-decoration:none; }
+  .errorlist { list-style:none; padding:0; margin:4px 0 0; }
+  .errorlist li { color:#dc2626; font-size:.8rem; }
+</style>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-logo"><i class="fas fa-user-plus"></i></div>
+    <h2>Create Account</h2>
+    <p class="sub">Register as a Barangay Resident</p>
+    <form method="post">
+      {% csrf_token %}
+      <div class="row g-3">
+        <div class="col-6"><label class="form-label">First Name</label>{{ form.first_name }}{{ form.first_name.errors }}</div>
+        <div class="col-6"><label class="form-label">Last Name</label>{{ form.last_name }}{{ form.last_name.errors }}</div>
+        <div class="col-12"><label class="form-label">Username</label>{{ form.username }}{{ form.username.errors }}</div>
+        <div class="col-12"><label class="form-label">Email</label>{{ form.email }}{{ form.email.errors }}</div>
+        <div class="col-6"><label class="form-label">Phone Number</label>{{ form.phone_number }}</div>
+        <div class="col-6"><label class="form-label">Address</label>{{ form.address }}</div>
+        <div class="col-6"><label class="form-label">Password</label>{{ form.password1 }}{{ form.password1.errors }}</div>
+        <div class="col-6"><label class="form-label">Confirm Password</label>{{ form.password2 }}{{ form.password2.errors }}</div>
+      </div>
+      <button type="submit" class="btn-register mt-3">Create Account <i class="fas fa-arrow-right ms-1"></i></button>
+    </form>
+    <div class="auth-footer">Already have an account? <a href="{% url 'login' %}">Sign in</a></div>
+  </div>
+</div>
+{% endblock %}

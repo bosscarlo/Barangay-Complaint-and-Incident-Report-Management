@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="stat-card bg-white"><div class="stat-icon" style="background:#eff6ff;color:#1a56db;"><i class="fas fa-clipboard-list"></i></div><div><h3 style="color:#1a56db;">{{ stats.total }}</h3><p>Total Reports</p></div></div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card bg-white"><div class="stat-icon" style="background:#fffbeb;color:#d97706;"><i class="fas fa-clock"></i></div><div><h3 style="color:#d97706;">{{ stats.pending }}</h3><p>Pending</p></div></div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card bg-white"><div class="stat-icon" style="background:#eff6ff;color:#3b82f6;"><i class="fas fa-spinner"></i></div><div><h3 style="color:#3b82f6;">{{ stats.in_progress }}</h3><p>In Progress</p></div></div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card bg-white"><div class="stat-icon" style="background:#f0fdf4;color:#16a34a;"><i class="fas fa-circle-check"></i></div><div><h3 style="color:#16a34a;">{{ stats.resolved }}</h3><p>Resolved</p></div></div>
+  </div>
+</div>
+{% if stats.urgent > 0 %}
+<div class="alert d-flex align-items-center gap-2 mb-4" style="background:#fef2f2;border-left:4px solid #dc2626;border-radius:12px;">
+  <i class="fas fa-triangle-exclamation text-danger"></i>
+  <span><strong>{{ stats.urgent }} urgent report(s)</strong> require immediate attention.</span>
+  <a href="{% url 'complaint_list' %}?priority=urgent" class="ms-auto btn btn-sm btn-danger">View Urgent</a>
+</div>
+{% endif %}
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-body p-0">
+        <div class="d-flex align-items-center justify-content-between px-4 py-3 border-bottom">
+          <h6 class="mb-0 fw-bold">Recent Reports</h6>
+          <a href="{% url 'complaint_list' %}" class="btn btn-sm btn-light">View All</a>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead><tr><th class="px-4">#</th><th>Title</th><th>Type</th><th>Status</th><th>Priority</th><th>Date</th></tr></thead>
+            <tbody>
+              {% for c in recent_complaints %}
+              <tr style="cursor:pointer;" onclick="location.href='{% url 'complaint_detail' c.pk %}'">
+                <td class="px-4 text-muted">{{ c.id|stringformat:"05d" }}</td>
+                <td><div class="fw-semibold" style="font-size:.88rem;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ c.title }}</div><small class="text-muted">{{ c.location }}</small></td>
+                <td><span class="badge bg-secondary">{{ c.get_type_display }}</span></td>
+                <td><span class="badge bg-{{ c.status_color }}">{{ c.get_status_display }}</span></td>
+                <td><span class="badge bg-{{ c.priority_color }}">{{ c.get_priority_display }}</span></td>
+                <td class="text-muted" style="font-size:.82rem;">{{ c.created_at|date:"M d, Y" }}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="6" class="text-center text-muted py-5"><i class="fas fa-inbox fa-2x mb-2 d-block"></i>No reports yet. <a href="{% url 'complaint_create' %}">File one now.</a></td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h6 class="fw-bold mb-3">Reports by Category</h6>
+        {% for item in category_data %}
+        <div class="mb-3">
+          <div class="d-flex justify-content-between mb-1">
+            <small class="fw-semibold">{{ item.category__name|default:"Uncategorized" }}</small>
+            <small class="text-muted">{{ item.count }}</small>
+          </div>
+          <div class="progress" style="height:6px;border-radius:6px;">
+            <div class="progress-bar" style="width:{% widthratio item.count stats.total 100 %}%;background:#1a56db;border-radius:6px;"></div>
+          </div>
+        </div>
+        {% empty %}<p class="text-muted text-center py-4" style="font-size:.88rem;">No data yet.</p>{% endfor %}
+        <hr class="my-3"/>
+        <a href="{% url 'complaint_create' %}" class="btn btn-primary w-100"><i class="fas fa-plus me-1"></i> File New Report</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

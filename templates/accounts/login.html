@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block auth_content %}
+<style>
+  body { background:linear-gradient(135deg,#0f1c3f 0%,#1a3a6e 60%,#1a56db 100%); }
+  .auth-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+  .auth-card { background:#fff; border-radius:24px; padding:48px 40px; width:100%; max-width:440px; box-shadow:0 24px 60px rgba(0,0,0,.25); }
+  .auth-logo { width:56px; height:56px; border-radius:16px; background:#f59e0b; display:flex; align-items:center; justify-content:center; font-size:1.5rem; color:#fff; margin-bottom:20px; }
+  .auth-card h2 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:1.6rem; }
+  .auth-card p.sub { color:#64748b; font-size:.9rem; margin-bottom:28px; }
+  .form-label { font-weight:600; font-size:.85rem; margin-bottom:6px; }
+  .btn-login { background:#1a56db; border:none; color:#fff; width:100%; padding:13px; border-radius:12px; font-size:1rem; font-weight:700; margin-top:8px; cursor:pointer; transition:background .2s; }
+  .btn-login:hover { background:#1245b8; }
+  .auth-footer { text-align:center; margin-top:20px; font-size:.88rem; color:#64748b; }
+  .auth-footer a { color:#1a56db; font-weight:600; text-decoration:none; }
+</style>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-logo"><i class="fas fa-landmark"></i></div>
+    <h2>Welcome Back</h2>
+    <p class="sub">Sign in to the Barangay Portal</p>
+    {% if messages %}{% for msg in messages %}
+    <div class="alert alert-danger mb-3" style="border-radius:10px;font-size:.88rem;">{{ msg }}</div>
+    {% endfor %}{% endif %}
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">Username</label>{{ form.username }}
+        {% if form.username.errors %}<div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>{% endif %}
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>{{ form.password }}
+        {% if form.password.errors %}<div class="text-danger small mt-1">{{ form.password.errors.0 }}</div>{% endif %}
+      </div>
+      <button type="submit" class="btn-login">Sign In <i class="fas fa-arrow-right ms-1"></i></button>
+    </form>
+    <div class="auth-footer">Don't have an account? <a href="{% url 'register' %}">Register here</a></div>
+  </div>
+</div>
+{% endblock %}

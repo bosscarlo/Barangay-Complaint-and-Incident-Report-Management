@@ -1,0 +1,9 @@
+[
+  {"model":"complaints.category","pk":1,"fields":{"name":"Noise Complaint","description":"Loud music or disturbances","icon":"fas fa-volume-high"}},
+  {"model":"complaints.category","pk":2,"fields":{"name":"Road & Infrastructure","description":"Damaged roads, potholes","icon":"fas fa-road"}},
+  {"model":"complaints.category","pk":3,"fields":{"name":"Waste Management","description":"Illegal dumping, garbage","icon":"fas fa-trash"}},
+  {"model":"complaints.category","pk":4,"fields":{"name":"Peace & Order","description":"Fights, disturbances","icon":"fas fa-shield-halved"}},
+  {"model":"complaints.category","pk":5,"fields":{"name":"Flooding / Drainage","description":"Clogged canals, flooding","icon":"fas fa-water"}},
+  {"model":"complaints.category","pk":6,"fields":{"name":"Health & Sanitation","description":"Unsanitary conditions","icon":"fas fa-kit-medical"}},
+  {"model":"complaints.category","pk":7,"fields":{"name":"Others","description":"Other concerns","icon":"fas fa-ellipsis"}}
+]

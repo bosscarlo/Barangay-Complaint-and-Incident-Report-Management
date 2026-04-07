@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Barangay Portal{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --primary:#1a56db; --primary-dark:#1245b8; --accent:#f59e0b; --sidebar-w:260px; --bg:#f0f4f8; --card:#ffffff; --text:#1e293b; --muted:#64748b; --border:#e2e8f0; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+    h1,h2,h3,h4,h5,h6,.fw-bold,.fw-semibold { font-family:'Plus Jakarta Sans',sans-serif; }
+    .sidebar { position:fixed; top:0; left:0; width:var(--sidebar-w); height:100vh; background:linear-gradient(175deg,#0f1c3f 0%,#1a3a6e 100%); display:flex; flex-direction:column; z-index:100; overflow-y:auto; transition:transform .3s; }
+    .sidebar-brand { padding:24px 20px 16px; border-bottom:1px solid rgba(255,255,255,.1); }
+    .sidebar-brand .brand-icon { width:42px; height:42px; border-radius:12px; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#fff; font-weight:800; margin-bottom:10px; }
+    .sidebar-brand h5 { color:#fff; font-size:.95rem; line-height:1.3; margin:0; }
+    .sidebar-brand small { color:rgba(255,255,255,.5); font-size:.75rem; }
+    .sidebar-nav { padding:16px 12px; flex:1; }
+    .nav-label { font-size:.68rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.35); padding:12px 8px 6px; }
+    .sidebar-link { display:flex; align-items:center; gap:12px; padding:11px 12px; border-radius:10px; color:rgba(255,255,255,.7); text-decoration:none; font-size:.9rem; font-weight:500; transition:all .2s; margin-bottom:2px; }
+    .sidebar-link i { width:18px; text-align:center; font-size:.95rem; }
+    .sidebar-link:hover,.sidebar-link.active { background:rgba(255,255,255,.12); color:#fff; }
+    .sidebar-link.active { background:var(--primary); color:#fff; }
+    .sidebar-footer { padding:16px; border-top:1px solid rgba(255,255,255,.1); }
+    .sidebar-user { display:flex; align-items:center; gap:10px; }
+    .avatar { width:36px; height:36px; border-radius:50%; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.85rem; flex-shrink:0; overflow:hidden; }
+    .avatar img { width:100%; height:100%; object-fit:cover; }
+    .sidebar-user-info { flex:1; min-width:0; }
+    .sidebar-user-info strong { display:block; color:#fff; font-size:.82rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .sidebar-user-info span { color:rgba(255,255,255,.45); font-size:.72rem; }
+    .main-wrap { margin-left:var(--sidebar-w); min-height:100vh; display:flex; flex-direction:column; }
+    .topbar { background:var(--card); border-bottom:1px solid var(--border); padding:0 28px; height:62px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:50; }
+    .topbar-title { font-size:1.05rem; font-weight:700; }
+    .content { padding:28px; flex:1; }
+    .card { border:1px solid var(--border); border-radius:16px; box-shadow:0 1px 4px rgba(0,0,0,.05); background:var(--card); }
+    .stat-card { border-radius:16px; padding:22px; display:flex; align-items:center; gap:16px; border:1px solid var(--border); }
+    .stat-icon { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0; }
+    .stat-card h3 { font-size:1.8rem; font-weight:800; margin:0; line-height:1; }
+    .stat-card p { color:var(--muted); font-size:.82rem; margin:4px 0 0; }
+    .badge { font-weight:600; font-size:.72rem; letter-spacing:.02em; }
+    .table th { font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); border-color:var(--border); }
+    .table td { vertical-align:middle; border-color:var(--border); font-size:.88rem; }
+    .table-hover tbody tr:hover { background:#f8fafc; }
+    .alert { border-radius:12px; border:none; font-size:.88rem; }
+    .form-control,.form-select { border-radius:10px; border-color:var(--border); font-size:.9rem; padding:.55rem .85rem; }
+    .form-control:focus,.form-select:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(26,86,219,.12); }
+    .btn { border-radius:10px; font-weight:600; font-size:.88rem; }
+    .btn-primary { background:var(--primary); border-color:var(--primary); }
+    .btn-primary:hover { background:var(--primary-dark); border-color:var(--primary-dark); }
+    .hamburger { display:none; }
+    @media (max-width:768px) { .sidebar { transform:translateX(-100%); } .sidebar.open { transform:translateX(0); } .main-wrap { margin-left:0; } .hamburger { display:block; } .content { padding:16px; } }
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+{% if user.is_authenticated %}
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon"><i class="fas fa-landmark"></i></div>
+    <h5>Barangay Portal</h5>
+    <small>Complaint & Incident System</small>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-label">Main</div>
+    <a href="{% url 'dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"><i class="fas fa-th-large"></i> Dashboard</a>
+    <a href="{% url 'complaint_list' %}" class="sidebar-link {% if 'complaint' in request.resolver_match.url_name %}active{% endif %}"><i class="fas fa-clipboard-list"></i> All Reports</a>
+    <a href="{% url 'complaint_create' %}" class="sidebar-link"><i class="fas fa-plus-circle"></i> New Report</a>
+    {% if user.is_staff_member %}
+    <div class="nav-label">Admin</div>
+    <a href="/admin/" class="sidebar-link"><i class="fas fa-shield-halved"></i> Admin Panel</a>
+    <a href="/api/" class="sidebar-link"><i class="fas fa-code"></i> REST API</a>
+    {% endif %}
+    <div class="nav-label">Account</div>
+    <a href="{% url 'profile' %}" class="sidebar-link"><i class="fas fa-user-circle"></i> Profile</a>
+    <a href="{% url 'logout' %}" class="sidebar-link"><i class="fas fa-right-from-bracket"></i> Logout</a>
+  </div>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="avatar">
+        {% if user.profile_picture %}<img src="{{ user.profile_picture.url }}" alt="avatar"/>
+        {% else %}{{ user.get_full_name|first|upper|default:user.username|first|upper }}{% endif %}
+      </div>
+      <div class="sidebar-user-info">
+        <strong>{{ user.get_full_name|default:user.username }}</strong>
+        <span>{{ user.get_role_display }}</span>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="main-wrap">
+  <header class="topbar">
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn btn-sm btn-light hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="fas fa-bars"></i></button>
+      <span class="topbar-title">{% block page_title %}Dashboard{% endblock %}</span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <a href="{% url 'complaint_create' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus me-1"></i> New Report</a>
+    </div>
+  </header>
+  <main class="content">
+    {% if messages %}{% for msg in messages %}
+    <div class="alert alert-{{ msg.tags|default:'info' }} alert-dismissible fade show mb-3" role="alert">
+      {{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+{% else %}{% block auth_content %}{% endblock %}{% endif %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
